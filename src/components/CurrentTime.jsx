@@ -32,8 +32,8 @@ const CurrentTime = () => {
   }
 
   return (
-    <section className="text-center inline-flex flex-col items-center gap-4 mt-5 ms-5">
-      <div className="text-white text-6xl flex -space-x-1">
+    <section className="text-center inline-flex flex-col items-center gap-4 mt-5 ms-5 backdrop-blur-lg p-4 rounded-2xl shadow shadow-gray-300/30 select-none">
+      <div className="text-white text-5xl flex -space-x-1">
         <p>{hours}</p>
         <span className="animate-fade">&nbsp;:&nbsp;</span>
         <p>{minutes}</p>
