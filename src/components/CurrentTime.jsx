@@ -12,24 +12,40 @@ const CurrentTime = () => {
       clearInterval(timeInter);
     };
   }, []);
+  let hours, minutes, seconds, days, months, years, ampm;
 
-  let hours = dateTime.toLocaleTimeString("en-US", { hour: "2-digit", hour12: true }).split(" ")[0];
-  let minutes = dateTime.toLocaleTimeString("en-US", { minute: "2-digit" });
-  let seconds = dateTime.toLocaleTimeString("en-US", { second: "2-digit" });
-  const ampm = dateTime.toLocaleTimeString("en-US", { hour: "2-digit", hour12: true }).split(" ")[1];
-  let days = dateTime.toLocaleDateString("en-US", { day: "numeric" });
-  let months = dateTime.toLocaleDateString("en-US", { month: "short" });
-  let years = dateTime.toLocaleDateString("en-US", { year: "numeric" });
+  // Use a single Intl.DateTimeFormat and formatToParts to avoid multiple toLocale* calls
+  const dtf = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "Asia/Dhaka",
+  });
 
-  if (minutes < 10) {
-    minutes = `0${minutes}`;
-  }
-  if (seconds < 10) {
-    seconds = `0${seconds}`;
-  }
-  if (days < 10) {
-    days = `0${days}`;
-  }
+  const parts = dtf.formatToParts(dateTime);
+  const partMap = Object.fromEntries(parts.map((p) => [p.type, p.value]));
+
+  hours = partMap.hour ?? "";
+  minutes = partMap.minute ?? "";
+  seconds = partMap.second ?? "";
+  ampm = partMap.dayPeriod ?? "";
+  days = partMap.day ?? "";
+  months = partMap.month ?? "";
+  years = partMap.year ?? "";
+
+  // if (minutes < 10) {
+  //   minutes = `0${minutes}`;
+  // }
+  // if (seconds < 10) {
+  //   seconds = `0${seconds}`;
+  // }
+  // if (days < 10) {
+  //   days = `0${days}`;
+  // }
 
   return (
     <section className="text-center inline-flex flex-col items-center gap-4 backdrop-blur-lg p-4 rounded-2xl shadow shadow-gray-300/30 select-none">
