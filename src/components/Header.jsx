@@ -1,6 +1,8 @@
 import GLabsIcon from "../assets/GLabsIcon";
 import MenuIcon from "../assets/MenuIcon";
 import CurrentTime from "./CurrentTime";
+import ProfileIcon from "../assets/profile.jpg";
+import ProBorder from "../assets/ProBorder.jsx";
 
 const Header = () => {
   return (
@@ -17,9 +19,16 @@ const Header = () => {
           <a href="https://labs.google.com/search?source=ntp" className="size-10 hover:bg-[#e8eaed14] grid place-items-center rounded-full transition-all">
             <GLabsIcon className="fill-white/87" />
           </a>
-          <button className="size-10 hover:bg-[#e8eaed14] grid place-items-center rounded-full transition-all cursor-pointer">
-            <MenuIcon className="fill-white/87" />
-          </button>
+          <div>
+            <button className="size-10 hover:bg-[#e8eaed14] grid place-items-center rounded-full transition-all cursor-pointer">
+              <MenuIcon className="fill-white/87" />
+            </button>
+          </div>
+          <div>
+            <button className="size-10 grid place-items-center rounded-full transition-all cursor-pointer">
+              <img src={ProfileIcon} alt="Profile" className="rounded-full" />
+            </button>
+          </div>
         </div>
       </div>
     </header>
