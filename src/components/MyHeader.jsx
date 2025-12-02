@@ -4,7 +4,7 @@ import CurrentTime from "./CurrentTime";
 import AppsMenu from "./AppsMenu";
 import ProfileMenu from "./ProfileMenu";
 
-const Header = () => {
+const MyHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -44,4 +44,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default MyHeader;
