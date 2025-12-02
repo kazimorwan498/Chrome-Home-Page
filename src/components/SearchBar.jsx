@@ -3,7 +3,7 @@ import SearchIcon from "../assets/SearchIcon";
 import MicIcon from "../assets/MicIcon";
 import ImageSearchIcon from "../assets/ImageSearchIcon";
 
-const GoogleSearchBar = () => {
+const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
@@ -14,7 +14,7 @@ const GoogleSearchBar = () => {
       // Check if it's a valid URL
       const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/i;
       const ipPattern = /^(https?:\/\/)?(\d{1,3}\.){3}\d{1,3}(:\d+)?(\/.*)?$/i;
-      
+
       if (urlPattern.test(str) || ipPattern.test(str)) {
         // If it doesn't start with http:// or https://, add https://
         if (!str.match(/^https?:\/\//i)) {
@@ -22,23 +22,24 @@ const GoogleSearchBar = () => {
         }
         return str;
       }
-      
+
       // Check for common TLDs without protocol
-      const commonTLDs = ['.com', '.org', '.net', '.edu', '.gov', '.io', '.co', '.dev'];
-      const hasTLD = commonTLDs.some(tld => str.toLowerCase().includes(tld));
-      const hasDot = str.includes('.');
-      
-      if (hasTLD && hasDot && !str.includes(' ')) {
+      const commonTLDs = [".com", ".org", ".net", ".edu", ".gov", ".io", ".co", ".dev"];
+      const hasTLD = commonTLDs.some((tld) => str.toLowerCase().includes(tld));
+      const hasDot = str.includes(".");
+
+      if (hasTLD && hasDot && !str.includes(" ")) {
         return `https://${str}`;
       }
-      
+
       return null;
     } catch {
       return null;
     }
   };
 
-  const handleSearch = useCallback((query = searchQuery) => {
+  // Extract search logic to avoid dependency issues
+  const performSearch = (query) => {
     const trimmedQuery = query.trim();
     if (!trimmedQuery) return;
 
@@ -50,7 +51,14 @@ const GoogleSearchBar = () => {
       // Perform Google search
       window.location.href = `https://www.google.com/search?q=${encodeURIComponent(trimmedQuery)}`;
     }
-  }, [searchQuery]);
+  };
+
+  const handleSearch = useCallback(
+    (query) => {
+      performSearch(query || searchQuery);
+    },
+    [searchQuery]
+  );
 
   // Initialize Web Speech API for voice search
   useEffect(() => {
@@ -65,9 +73,9 @@ const GoogleSearchBar = () => {
         const transcript = event.results[0][0].transcript;
         setSearchQuery(transcript);
         setIsListening(false);
-        // Auto-submit after voice input
+        // Auto-submit after voice input - use performSearch directly to avoid dependency issues
         if (transcript.trim()) {
-          handleSearch(transcript);
+          performSearch(transcript);
         }
       };
 
@@ -86,7 +94,8 @@ const GoogleSearchBar = () => {
         recognitionRef.current.abort();
       }
     };
-  }, [handleSearch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array - only initialize once
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -146,24 +155,14 @@ const GoogleSearchBar = () => {
             autoFocus
           />
           <div className="flex items-center gap-2 ml-2">
-            <button
-              type="button"
-              onClick={handleImageSearch}
-              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-              title="Search by image"
-            >
+            <button type="button" onClick={handleImageSearch} className="p-1 hover:bg-gray-100 rounded-full transition-colors" title="Search by image">
               <ImageSearchIcon className="fill-gray-500" />
             </button>
             <button
               type="button"
               onClick={handleVoiceSearch}
-              className={`p-1 rounded-full transition-colors ${
-                isListening
-                  ? "bg-red-100 hover:bg-red-200 animate-pulse"
-                  : "hover:bg-gray-100"
-              }`}
-              title={isListening ? "Listening... Click to stop" : "Search by voice"}
-            >
+              className={`p-1 rounded-full transition-colors ${isListening ? "bg-red-100 hover:bg-red-200 animate-pulse" : "hover:bg-gray-100"}`}
+              title={isListening ? "Listening... Click to stop" : "Search by voice"}>
               <MicIcon className={isListening ? "fill-red-500" : "fill-gray-500"} />
             </button>
           </div>
@@ -173,5 +172,4 @@ const GoogleSearchBar = () => {
   );
 };
 
-export default GoogleSearchBar;
-
+export default SearchBar;
