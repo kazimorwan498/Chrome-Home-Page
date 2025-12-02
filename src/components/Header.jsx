@@ -1,34 +1,43 @@
+import { useState } from "react";
 import GLabsIcon from "../assets/GLabsIcon";
-import MenuIcon from "../assets/MenuIcon";
 import CurrentTime from "./CurrentTime";
-import ProfileIcon from "../assets/profile.jpg";
-import ProBorder from "../assets/ProBorder.jsx";
+import AppsMenu from "./AppsMenu";
+import ProfileMenu from "./ProfileMenu";
 
 const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const handleMenuToggle = (isOpen) => {
+    setIsMenuOpen(isOpen);
+    if (isOpen) {
+      setIsProfileOpen(false);
+    }
+  };
+
+  const handleProfileToggle = (isOpen) => {
+    setIsProfileOpen(isOpen);
+    if (isOpen) {
+      setIsMenuOpen(false);
+    }
+  };
+
   return (
-    <header className="text-white flex justify-between items-start p-2 ">
+    <header className="text-white flex justify-between items-start p-4 md:p-6 relative z-50">
       <CurrentTime />
-      <div className="flex items-center justify-center gap-5">
-        <a className="text-[14px]" href="https://mail.google.com/mail/?tab=rm&ogbl">
+      <div className="flex items-center justify-center gap-3 md:gap-5">
+        <a className="text-[14px] hover:underline hidden md:inline-block" href="https://mail.google.com/mail/?tab=rm&ogbl">
           Gmail
         </a>
-        <a className="text-[14px]" href="https://www.google.com/imghp?hl=en&tab=ri&ogbl">
+        <a className="text-[14px] hover:underline hidden md:inline-block" href="https://www.google.com/imghp?hl=en&tab=ri&ogbl">
           Images
         </a>
-        <div className="flex gap-3">
-          <a href="https://labs.google.com/search?source=ntp" className="size-10 hover:bg-[#e8eaed14] grid place-items-center rounded-full transition-all">
+        <div className="flex gap-2 md:gap-3">
+          <a href="https://labs.google.com/search?source=ntp" className="size-10 hover:bg-[#e8eaed14] grid place-items-center rounded-full transition-all" title="Google Labs">
             <GLabsIcon className="fill-white/87" />
           </a>
-          <div>
-            <button className="size-10 hover:bg-[#e8eaed14] grid place-items-center rounded-full transition-all cursor-pointer">
-              <MenuIcon className="fill-white/87" />
-            </button>
-          </div>
-          <div>
-            <button className="size-10 grid place-items-center rounded-full transition-all cursor-pointer">
-              <img src={ProfileIcon} alt="Profile" className="rounded-full" />
-            </button>
-          </div>
+          <AppsMenu onMenuToggle={handleMenuToggle} isProfileOpen={isProfileOpen} />
+          <ProfileMenu onProfileToggle={handleProfileToggle} isMenuOpen={isMenuOpen} />
         </div>
       </div>
     </header>
