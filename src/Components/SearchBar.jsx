@@ -3,55 +3,55 @@ import SearchIcon from "../assets/SearchIcon";
 import MicIcon from "../assets/MicIcon";
 import ImageSearchIcon from "../assets/ImageSearchIcon";
 
+// Check if input is a URL
+const isURL = (str) => {
+  try {
+    // Check if it's a valid URL
+    const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/i;
+    const ipPattern = /^(https?:\/\/)?(\d{1,3}\.){3}\d{1,3}(:\d+)?(\/.*)?$/i;
+
+    if (urlPattern.test(str) || ipPattern.test(str)) {
+      // If it doesn't start with http:// or https://, add https://
+      if (!str.match(/^https?:\/\//i)) {
+        return `https://${str}`;
+      }
+      return str;
+    }
+
+    // Check for common TLDs without protocol
+    const commonTLDs = [".com", ".org", ".net", ".edu", ".gov", ".io", ".co", ".dev"];
+    const hasTLD = commonTLDs.some((tld) => str.toLowerCase().includes(tld));
+    const hasDot = str.includes(".");
+
+    if (hasTLD && hasDot && !str.includes(" ")) {
+      return `https://${str}`;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+};
+
+// Extract search logic to avoid dependency issues
+const performSearch = (query) => {
+  const trimmedQuery = query.trim();
+  if (!trimmedQuery) return;
+
+  const url = isURL(trimmedQuery);
+  if (url) {
+    // Navigate directly to URL
+    window.location.href = url;
+  } else {
+    // Perform Google search
+    window.location.href = `https://www.google.com/search?q=${encodeURIComponent(trimmedQuery)}`;
+  }
+};
+
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef(null);
-
-  // Check if input is a URL
-  const isURL = (str) => {
-    try {
-      // Check if it's a valid URL
-      const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/i;
-      const ipPattern = /^(https?:\/\/)?(\d{1,3}\.){3}\d{1,3}(:\d+)?(\/.*)?$/i;
-
-      if (urlPattern.test(str) || ipPattern.test(str)) {
-        // If it doesn't start with http:// or https://, add https://
-        if (!str.match(/^https?:\/\//i)) {
-          return `https://${str}`;
-        }
-        return str;
-      }
-
-      // Check for common TLDs without protocol
-      const commonTLDs = [".com", ".org", ".net", ".edu", ".gov", ".io", ".co", ".dev"];
-      const hasTLD = commonTLDs.some((tld) => str.toLowerCase().includes(tld));
-      const hasDot = str.includes(".");
-
-      if (hasTLD && hasDot && !str.includes(" ")) {
-        return `https://${str}`;
-      }
-
-      return null;
-    } catch {
-      return null;
-    }
-  };
-
-  // Extract search logic to avoid dependency issues
-  const performSearch = (query) => {
-    const trimmedQuery = query.trim();
-    if (!trimmedQuery) return;
-
-    const url = isURL(trimmedQuery);
-    if (url) {
-      // Navigate directly to URL
-      window.location.href = url;
-    } else {
-      // Perform Google search
-      window.location.href = `https://www.google.com/search?q=${encodeURIComponent(trimmedQuery)}`;
-    }
-  };
 
   const handleSearch = useCallback(
     (query) => {
@@ -94,7 +94,6 @@ const SearchBar = () => {
         recognitionRef.current.abort();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array - only initialize once
 
   const handleSubmit = (e) => {

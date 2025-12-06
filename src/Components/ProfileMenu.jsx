@@ -7,7 +7,7 @@ import SettingsIcon from "../assets/SettingsIcon";
 import PrivacyIcon from "../assets/PrivacyIcon";
 import SignOutIcon from "../assets/SignOutIcon";
 
-const ProfileMenu = ({ onProfileToggle, isMenuOpen }) => {
+const ProfileMenu = ({ onProfileToggle }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef(null);
 
