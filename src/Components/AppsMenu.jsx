@@ -15,7 +15,7 @@ import TranslateIcon from "../assets/TranslateIcon";
 import PhotosIcon from "../assets/PhotosIcon";
 import ShoppingIcon from "../assets/ShoppingIcon";
 
-const AppsMenu = ({ onMenuToggle, isProfileOpen }) => {
+const AppsMenu = ({ onMenuToggle }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
